@@ -1,14 +1,17 @@
 #include "mbed.h"
 
-DigitalOut led1(LED1);
+Serial pc(USBTX, USBRX); // tx, rx
 
-int main()
-{
-    while(1)
-    {
-        led1 = 0;
-        wait(1);
-        led1 = 1;
-        wait(1);
+int main() {
+    pc.printf("Escriba cualquier cosa\n");
+    //pc.baud(9600);
+    // Baud Rate 9600
+    // Data Bits 8
+    // Parity None
+    // Stop Bits 1
+    while(1) {
+    	if(pc.readable()) {
+    		pc.putc(pc.getc());
+    	}
     }
 }
