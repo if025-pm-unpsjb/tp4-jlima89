@@ -17,53 +17,61 @@ int main( void )
 	uartConfig( UART_USB, 9600 );
 	bool_t boton1, boton2, boton3, boton4;
 	bool_t boton1_ant, boton2_ant, boton3_ant, boton4_ant;
-	bool_t led1, led2, led3, led4;
+	bool_t ledON_OFF = OFF, ledR = OFF, ledG = OFF, ledB = OFF;
 
 	while( TRUE ) {
-		// reglas para el boton 1
+		// reglas para el boton 1 (On-Off Led)
 		boton1 = gpioRead( TEC1 );
-		led1 = !boton1;
 		if( boton1 == BTN_PRESIONADO && boton1_ant == BTN_LIBERADO ) {
-			gpioWrite( CIAA_BOARD_LED, led1 );
-			uartWriteString(UART_USB, "BOTON 1 presionado\n");
-			delay(500);
-			gpioWrite( CIAA_BOARD_LED, !led1 );
+			ledON_OFF = !ledON_OFF;
+			if( ledON_OFF == ON ) {
+				uartWriteString(UART_USB, "Boton 1 - LED RGB ON\n");
+				ledR = ON;
+				ledG = ON;
+				ledB = ON;
+				gpioWrite( LEDR, ledR );
+				gpioWrite( LEDG, ledG );
+				gpioWrite( LEDB, ledB );
+			} else {
+				uartWriteString(UART_USB, "Boton 1 - LED RGB OFF\n");
+				gpioWrite( LEDR, OFF );
+				gpioWrite( LEDG, OFF );
+				gpioWrite( LEDB, OFF );
+			}
+			//delay(500);
 		}
 		boton1_ant = boton1;
 
-		// reglas para el boton 2
+		// reglas para el boton 2 (R)
 		boton2 = gpioRead( TEC2 );
-		led2 = !boton2;
 		if( boton2 == BTN_PRESIONADO && boton2_ant == BTN_LIBERADO ) {
-			gpioWrite( LED1, led2 );
-			uartWriteString(UART_USB, "BOTON 2 presionado\n");
-			delay(500);
-			gpioWrite( LED1, !led2 );
+			ledR = !ledR;
+			uartWriteString(UART_USB, "BOTON 2 - R\n");
+			gpioWrite( LEDR, ledR && ledON_OFF );
+			//delay(500);
 		}
 		boton2_ant = boton2;
 
-		// reglas para el boton 3
+		// reglas para el boton 3 (G)
 		boton3 = gpioRead( TEC3 );
-		led3 = !boton3;
 		if( boton3 == BTN_PRESIONADO && boton3_ant == BTN_LIBERADO ) {
-			gpioWrite( LED2, led3 );
-			uartWriteString(UART_USB, "BOTON 3 presionado\n");
-			delay(500);
-			gpioWrite( LED2, !led3 );
+			ledG = !ledG;
+			uartWriteString(UART_USB, "BOTON 3 - G\n");
+			gpioWrite( LEDG, ledG && ledON_OFF );
+			//delay(500);
 		}
 		boton3_ant = boton3;
 
-		// reglas para el boton 4
+		// reglas para el boton 4 (B)
 		boton4 = gpioRead( TEC4 );
-		led4 = !boton4;
 		if( boton4 == BTN_PRESIONADO && boton4_ant == BTN_LIBERADO ) {
-			gpioWrite( LED3, led4 );
-			uartWriteString(UART_USB, "BOTON 4 presionado\n");
-			delay(500);
-			gpioWrite( LED3, !led4 );
+			ledB = !ledB;
+			uartWriteString(UART_USB, "BOTON 4 - B\n");
+			gpioWrite( LEDB, ledB && ledON_OFF );
+			//delay(500);
 		}
 		boton4_ant = boton4;
 
-		delay(10);
+		delay(50);
 	}
 }
